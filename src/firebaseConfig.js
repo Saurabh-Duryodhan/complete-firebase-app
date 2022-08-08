@@ -7,15 +7,14 @@ import { getAnalytics } from "firebase/analytics";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyDZ8P_Pm4cBZdBGmIpVJdOOLrWC1mVrKsA",
-  authDomain: "firenestjs.firebaseapp.com",
-  projectId: "firenestjs",
-  storageBucket: "firenestjs.appspot.com",
-  messagingSenderId: "755937634902",
-  appId: "1:755937634902:web:5cc1d6c0b81953890e29f7",
-  measurementId: "G-2FN9F8MFN9"
+  apiKey: "AIzaSyCiM9z6pmZiiZWbI9SlYKsQE3NN_E-WUMk",
+  authDomain: "firenestapp.firebaseapp.com",
+  projectId: "firenestapp",
+  storageBucket: "firenestapp.appspot.com",
+  messagingSenderId: "508363806437",
+  appId: "1:508363806437:web:85e38de862c48c2a29260c",
+  measurementId: "G-GZKSBPSXJZ",
 };
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
-export const analytics = getAnalytics(app);
