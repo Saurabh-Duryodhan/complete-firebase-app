@@ -1,6 +1,12 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { app, database } from "./firebaseConfig";
+import { app, database, storage } from "./firebaseConfig";
+import {
+  ref,
+  getDownloadURL,
+  uploadBytes,
+  uploadBytesResumable,
+} from "firebase/storage";
 import {
   collection,
   addDoc,
@@ -28,11 +34,32 @@ const App = () => {
   const [data, setData] = useState();
   const [allUsers, setALlUsers] = useState([]);
   const [updateField, setUpdateField] = useState("");
+  const [profile, setProfile] = useState();
+  const [progressPercentage, setProgressPercentage] = useState(0);
 
   const handleInput = (e) => {
     const { name, value } = e.target;
     setUserInput({ ...userInput, [name]: value });
     setData({ ...data, ...userInput });
+  };
+
+  const handleFileInput = (e) => {
+    // const fileRef = ref(storage, profile.name);
+    // uploadBytes(fileRef, profile).then((snapshot) => {
+    //   // e.target[0].value = "";
+    //   getDownloadURL(snapshot.ref).then((downloadURL) => {
+    //     console.log(downloadURL);
+    //   });
+    // });
+
+    const fileRef = ref(storage, profile.name);
+    const uploadTask = uploadBytesResumable(fileRef, profile);
+    uploadTask.on("state_changed", (snapshot) => {
+      const progress = setProgressPercentage(
+        (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+      );
+      console.log(`File progress: ${progressPercentage}% done`);
+    });
   };
 
   const handleUpdateField = (e) => {
@@ -188,7 +215,39 @@ const App = () => {
           </div>
         );
       })}
-      <button type="submit" onClick={(e)=> dataDelete(e)}>Delete User</button>
+      <button type="submit" onClick={(e) => dataDelete(e)}>
+        Delete User
+      </button>
+      <input
+        type="file"
+        name="profileImage"
+        onChange={(e) => setProfile(e.target.files[0])}
+      />
+      <button type="submit" onClick={(e) => handleFileInput(e)}>
+        Upload file
+      </button>
+      <br />
+      <div
+        style={{
+          height: "200px",
+          backgroundColor: "lightgray",
+          padding: "1.5rem",
+          marginTop: "2rem",
+          borderRadius: "5px",
+          display: "flex",
+          flexDirection: "column",
+          margin: "auto",
+          width: "60%",
+          justifyContent: "center",
+        }}
+      >
+        <h1>File Progress:</h1>
+        <progress
+          style={{ color: "red", width: "100%" }}
+          value={progressPercentage}
+          max="100"
+        ></progress>
+      </div>
     </div>
   );
 };
