@@ -9,6 +9,8 @@ import {
   updateDoc,
   deleteDoc,
   onSnapshot,
+  query,
+  where,
 } from "firebase/firestore";
 import {
   getAuth,
@@ -17,6 +19,8 @@ import {
   GoogleAuthProvider,
   GithubAuthProvider,
   signInWithPopup,
+  onAuthStateChanged,
+  signOut,
 } from "firebase/auth";
 const App = () => {
   const auth = getAuth();
@@ -95,6 +99,24 @@ const App = () => {
     }
   };
 
+  const getByName = (e) => {
+    const getByNameQuery = query(
+      collectionRef,
+      where("email", "==", "srduryodhan97@gmail.com")
+    );
+    try {
+      onSnapshot(getByNameQuery, (data) => {
+        console.log(
+          data.docs.map((item) => {
+            return item.data();
+          })
+        );
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const SignInWithGoogle = () => {
     try {
       const googleSignIn = signInWithPopup(auth, googleProvider);
@@ -123,6 +145,10 @@ const App = () => {
     });
   };
 
+  const logOut = () => {
+    signOut(auth);
+  };
+
   const updateEmail = (e) => {
     e.preventDefault();
     const { email } = updateField;
@@ -142,6 +168,10 @@ const App = () => {
 
   useEffect(() => {
     playSnapshot();
+    onAuthStateChanged(auth, (data) => {
+      console.log(data);
+      data ? alert(`${data.email} is signed in`) : alert(`No user signed in`);
+    });
   }, []);
 
   return (
@@ -206,8 +236,9 @@ const App = () => {
       <button type="submit" onClick={(e) => dataDelete(e)}>
         Delete User
       </button>
-
       <button onClick={(e) => playSnapshot(e)}>Play Snapshot</button>
+      <button onClick={(e) => getByName(e)}>Get User By Name</button>
+      <button onClick={(e) => logOut(e)}>Signout</button>
     </div>
   );
 };
