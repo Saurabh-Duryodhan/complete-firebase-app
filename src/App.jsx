@@ -8,6 +8,7 @@ import {
   doc,
   updateDoc,
   deleteDoc,
+  onSnapshot,
 } from "firebase/firestore";
 import {
   getAuth,
@@ -61,6 +62,16 @@ const App = () => {
     } catch (err) {
       alert(err.message);
     }
+  };
+
+  const playSnapshot = async () => {
+    onSnapshot(collectionRef, (data) => {
+      console.log(
+        data.docs.map((item) => {
+          return item.data();
+        })
+      );
+    });
   };
 
   const handleSignIn = async (e) => {
@@ -129,6 +140,10 @@ const App = () => {
     });
   };
 
+  useEffect(() => {
+    playSnapshot();
+  }, []);
+
   return (
     <div>
       <div>
@@ -188,7 +203,11 @@ const App = () => {
           </div>
         );
       })}
-      <button type="submit" onClick={(e)=> dataDelete(e)}>Delete User</button>
+      <button type="submit" onClick={(e) => dataDelete(e)}>
+        Delete User
+      </button>
+
+      <button onClick={(e) => playSnapshot(e)}>Play Snapshot</button>
     </div>
   );
 };
